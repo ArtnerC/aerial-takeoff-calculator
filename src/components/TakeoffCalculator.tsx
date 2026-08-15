@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import { AddressSearch, type GeocodeCandidate } from "./AddressSearch";
 import { MapCanvas, type DrawnArea } from "./MapCanvas";
@@ -64,17 +65,25 @@ export function TakeoffCalculator() {
   return (
     <div className="min-h-screen">
       <header className="border-b border-slate-200 bg-white">
-        <div className="mx-auto max-w-3xl px-4 py-4 sm:py-5">
-          <p className="text-xs font-semibold uppercase tracking-widest text-green-700">
-            Ground Control
-          </p>
-          <h1 className="mt-1 text-xl font-bold text-slate-900 sm:text-2xl">
-            Aerial Takeoff Calculator
-          </h1>
-          <p className="mt-1 text-sm text-slate-600">
-            Trace your project area, pick a material, and get an instant cubic
-            yard, ton, and delivery estimate.
-          </p>
+        <div className="mx-auto flex max-w-3xl items-start justify-between gap-4 px-4 py-4 sm:py-5">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-widest text-green-700">
+              Ground Control
+            </p>
+            <h1 className="mt-1 text-xl font-bold text-slate-900 sm:text-2xl">
+              Aerial Takeoff Calculator
+            </h1>
+            <p className="mt-1 text-sm text-slate-600">
+              Trace your project area, pick a material, and get an instant cubic
+              yard, ton, and delivery estimate.
+            </p>
+          </div>
+          <Link
+            href="/about"
+            className="mt-1 shrink-0 text-sm font-semibold text-slate-700 underline decoration-green-600 underline-offset-4 transition hover:text-green-800"
+          >
+            Why use it?
+          </Link>
         </div>
       </header>
 
