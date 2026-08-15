@@ -69,11 +69,9 @@ export function MapCanvas({ onAreaChange, center = DEFAULT_CENTER }: MapCanvasPr
   const [points, setPoints] = useState<[number, number][]>([]);
   const [isDrawing, setIsDrawing] = useState(true);
   const [tilesLoaded, setTilesLoaded] = useState(false);
-  const [mapError, setMapError] = useState<string | null>(() =>
-    isWebGLAvailable()
-      ? null
-      : "This browser can't display the map (WebGL is unavailable). Use \"Type dimensions instead\" below."
-  );
+  // Must start null: this component is prerendered on the server, where WebGL
+  // never exists, so probing during render bakes a false failure into the HTML.
+  const [mapError, setMapError] = useState<string | null>(null);
   const isDrawingRef = useRef(isDrawing);
   useEffect(() => {
     isDrawingRef.current = isDrawing;
@@ -157,6 +155,15 @@ export function MapCanvas({ onAreaChange, center = DEFAULT_CENTER }: MapCanvasPr
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current || mapError) return;
+
+    if (!isWebGLAvailable()) {
+      queueMicrotask(() =>
+        setMapError(
+          "This browser can't display the map (WebGL is unavailable). Use \"Type dimensions\" above instead."
+        )
+      );
+      return;
+    }
 
     let map: MLMap;
     try {
@@ -260,17 +267,17 @@ export function MapCanvas({ onAreaChange, center = DEFAULT_CENTER }: MapCanvasPr
           satellite detail isn&apos;t available everywhere yet.
         </p>
       )}
+      <p className="text-sm text-slate-600">
+        {isDrawing
+          ? "Tap the map to trace the edge of the area. Add at least 3 points. Drag a point to adjust it."
+          : "Area closed. Drag a point to adjust it, or edit below."}
+      </p>
       <div className="flex flex-wrap items-center gap-2 text-sm">
-        <span className="text-slate-600">
-          {isDrawing
-            ? "Tap the map to trace the edge of the area. Add at least 3 points. Drag a point to adjust it."
-            : "Area closed. Drag a point to adjust it, or edit below."}
-        </span>
         <button
           type="button"
           onClick={handleUndo}
           disabled={points.length === 0}
-          className="rounded border border-slate-300 px-3 py-1 disabled:opacity-40"
+          className="rounded-lg border border-slate-300 bg-white px-3 py-2 font-medium text-slate-900 transition hover:border-slate-400 disabled:cursor-not-allowed disabled:opacity-40"
         >
           Undo point
         </button>
@@ -278,7 +285,7 @@ export function MapCanvas({ onAreaChange, center = DEFAULT_CENTER }: MapCanvasPr
           type="button"
           onClick={handleClear}
           disabled={points.length === 0}
-          className="rounded border border-slate-300 px-3 py-1 disabled:opacity-40"
+          className="rounded-lg border border-slate-300 bg-white px-3 py-2 font-medium text-slate-900 transition hover:border-slate-400 disabled:cursor-not-allowed disabled:opacity-40"
         >
           Clear
         </button>
@@ -286,7 +293,7 @@ export function MapCanvas({ onAreaChange, center = DEFAULT_CENTER }: MapCanvasPr
           type="button"
           onClick={isDrawing ? handleFinish : () => setIsDrawing(true)}
           disabled={points.length < 3}
-          className="rounded bg-green-700 px-3 py-1 text-white disabled:opacity-40"
+          className="rounded-lg bg-green-700 px-3 py-2 font-medium text-white transition hover:bg-green-800 disabled:cursor-not-allowed disabled:opacity-40"
         >
           {isDrawing ? "Finish area" : "Edit area"}
         </button>

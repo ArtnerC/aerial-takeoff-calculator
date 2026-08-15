@@ -32,29 +32,31 @@ export function AddressSearch({ onSelect }: AddressSearchProps) {
         <input
           type="text"
           placeholder="Enter your address"
+          aria-label="Property address"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           onKeyDown={(event) => event.key === "Enter" && search()}
-          className="flex-1 rounded border border-slate-300 px-3 py-2"
+          className="min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 placeholder:text-slate-400"
         />
         <button
           type="button"
           onClick={search}
-          className="rounded bg-green-700 px-4 py-2 text-white"
+          disabled={status === "loading" || query.trim().length < 3}
+          className="rounded-lg bg-green-700 px-4 py-2 font-medium text-white transition hover:bg-green-800 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          Find
+          {status === "loading" ? "Finding…" : "Find"}
         </button>
       </div>
       {status === "error" && (
-        <p className="text-sm text-red-600">
+        <p role="alert" className="text-sm text-red-700">
           Couldn&apos;t look that up. You can still trace the map manually or
           type dimensions below.
         </p>
       )}
       {candidates.length > 0 && (
-        <ul className="flex flex-col gap-1 rounded border border-slate-200 text-sm">
+        <ul className="flex flex-col overflow-hidden rounded-lg border border-slate-200 text-sm">
           {candidates.map((candidate) => (
-            <li key={`${candidate.lat}-${candidate.lng}`}>
+            <li key={`${candidate.lat}-${candidate.lng}`} className="border-b border-slate-100 last:border-b-0">
               <button
                 type="button"
                 onClick={() => {
@@ -62,7 +64,7 @@ export function AddressSearch({ onSelect }: AddressSearchProps) {
                   setCandidates([]);
                   setQuery(candidate.formattedAddress);
                 }}
-                className="w-full px-3 py-2 text-left hover:bg-slate-50"
+                className="w-full bg-white px-3 py-2 text-left text-slate-900 hover:bg-slate-50"
               >
                 {candidate.formattedAddress}
               </button>

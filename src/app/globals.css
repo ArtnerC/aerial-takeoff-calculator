@@ -2,20 +2,47 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * Light-only palette. Components use fixed light surface colors, so a
+ * prefers-color-scheme override here makes selected chips and inputs
+ * unreadable rather than actually theming the app.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: #f8fafc;
+  --foreground: #0f172a;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: var(--font-geist-sans, system-ui, sans-serif);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+@layer base {
+  /* Keyboard focus must stay visible on every interactive control. */
+  :focus-visible {
+    outline: 2px solid #15803d;
+    outline-offset: 2px;
+    border-radius: 0.25rem;
+  }
+
+  /* Dimensions are typed into number inputs; hiding the spinners stops the
+     value being nudged by a stray scroll while the field has focus. */
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

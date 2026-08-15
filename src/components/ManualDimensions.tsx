@@ -47,18 +47,32 @@ export function ManualDimensions({ onAreaChange }: ManualDimensionsProps) {
 
   return (
     <div className="flex flex-col gap-3 rounded-lg border border-slate-200 p-4">
-      <div className="flex gap-2 text-sm">
+      <div
+        role="group"
+        aria-label="How to enter the area"
+        className="flex flex-wrap gap-2"
+      >
         <button
           type="button"
+          aria-pressed={mode === "rectangle"}
           onClick={() => setMode("rectangle")}
-          className={`rounded px-3 py-1 ${mode === "rectangle" ? "bg-green-700 text-white" : "border border-slate-300"}`}
+          className={`rounded-lg border px-3 py-2 text-sm font-medium transition ${
+            mode === "rectangle"
+              ? "border-green-700 bg-green-700 text-white"
+              : "border-slate-200 bg-white text-slate-900 hover:border-slate-400"
+          }`}
         >
           Length × width
         </button>
         <button
           type="button"
+          aria-pressed={mode === "sqft"}
           onClick={() => setMode("sqft")}
-          className={`rounded px-3 py-1 ${mode === "sqft" ? "bg-green-700 text-white" : "border border-slate-300"}`}
+          className={`rounded-lg border px-3 py-2 text-sm font-medium transition ${
+            mode === "sqft"
+              ? "border-green-700 bg-green-700 text-white"
+              : "border-slate-200 bg-white text-slate-900 hover:border-slate-400"
+          }`}
         >
           I know the square footage
         </button>
@@ -66,7 +80,7 @@ export function ManualDimensions({ onAreaChange }: ManualDimensionsProps) {
 
       {mode === "rectangle" ? (
         <div className="flex flex-wrap items-end gap-3">
-          <label className="flex flex-col text-sm">
+          <label className="flex flex-col gap-1 text-sm text-slate-700">
             Length (ft)
             <input
               type="number"
@@ -74,11 +88,13 @@ export function ManualDimensions({ onAreaChange }: ManualDimensionsProps) {
               min={0}
               value={length}
               onChange={(event) => handleRectangle(event.target.value, width)}
-              className="w-28 rounded border border-slate-300 px-2 py-1"
+              className="w-28 rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900"
             />
           </label>
-          <span className="pb-1 text-slate-500">×</span>
-          <label className="flex flex-col text-sm">
+          <span aria-hidden="true" className="pb-3 text-slate-500">
+            ×
+          </span>
+          <label className="flex flex-col gap-1 text-sm text-slate-700">
             Width (ft)
             <input
               type="number"
@@ -86,12 +102,12 @@ export function ManualDimensions({ onAreaChange }: ManualDimensionsProps) {
               min={0}
               value={width}
               onChange={(event) => handleRectangle(length, event.target.value)}
-              className="w-28 rounded border border-slate-300 px-2 py-1"
+              className="w-28 rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900"
             />
           </label>
         </div>
       ) : (
-        <label className="flex flex-col text-sm">
+        <label className="flex flex-col gap-1 text-sm text-slate-700">
           Area (sq ft)
           <input
             type="number"
@@ -99,7 +115,7 @@ export function ManualDimensions({ onAreaChange }: ManualDimensionsProps) {
             min={0}
             value={sqft}
             onChange={(event) => handleSqft(event.target.value)}
-            className="w-40 rounded border border-slate-300 px-2 py-1"
+            className="w-40 rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900"
           />
         </label>
       )}

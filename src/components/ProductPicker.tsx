@@ -18,27 +18,33 @@ export function ProductPicker({ selectedId, onSelect }: ProductPickerProps) {
     <div className="flex flex-col gap-4">
       {Object.entries(byCategory).map(([category, products]) => (
         <div key={category}>
-          <h3 className="mb-2 text-sm font-semibold text-slate-700">
+          <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
             {CATEGORY_LABELS[category] ?? category}
           </h3>
-          <div className="flex flex-wrap gap-2">
-            {products.map((product) => (
-              <button
-                key={product.id}
-                type="button"
-                onClick={() => onSelect(product)}
-                className={`rounded-lg border px-3 py-2 text-left text-sm transition ${
-                  selectedId === product.id
-                    ? "border-green-700 bg-green-50 ring-1 ring-green-700"
-                    : "border-slate-200 hover:border-slate-300"
-                }`}
-              >
-                <div className="font-medium">{product.name}</div>
-                <div className="text-xs text-slate-500">
-                  ${product.pricePerUnit}/{product.soldBy === "ton" ? "ton" : "yd³"}
-                </div>
-              </button>
-            ))}
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+            {products.map((product) => {
+              const selected = selectedId === product.id;
+              return (
+                <button
+                  key={product.id}
+                  type="button"
+                  aria-pressed={selected}
+                  onClick={() => onSelect(product)}
+                  className={`rounded-lg border p-3 text-left transition ${
+                    selected
+                      ? "border-green-700 bg-green-50 ring-1 ring-green-700"
+                      : "border-slate-200 bg-white hover:border-slate-400"
+                  }`}
+                >
+                  <span className="block text-sm font-medium text-slate-900">
+                    {product.name}
+                  </span>
+                  <span className="mt-0.5 block text-xs text-slate-600">
+                    ${product.pricePerUnit}/{product.soldBy === "ton" ? "ton" : "yd³"}
+                  </span>
+                </button>
+              );
+            })}
           </div>
         </div>
       ))}
