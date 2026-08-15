@@ -69,6 +69,7 @@ export function MapCanvas({ onAreaChange, center = DEFAULT_CENTER }: MapCanvasPr
   const [points, setPoints] = useState<[number, number][]>([]);
   const [isDrawing, setIsDrawing] = useState(true);
   const [tilesLoaded, setTilesLoaded] = useState(false);
+  const [clearedByRecentre, setClearedByRecentre] = useState(false);
   // Must start null: this component is prerendered on the server, where WebGL
   // never exists, so probing during render bakes a false failure into the HTML.
   const [mapError, setMapError] = useState<string | null>(null);
@@ -251,6 +252,16 @@ export function MapCanvas({ onAreaChange, center = DEFAULT_CENTER }: MapCanvasPr
     } else {
       map.flyTo({ ...target, duration: 1200 });
     }
+
+    // A trace drawn at the previous location no longer matches what's on
+    // screen, so drop it rather than let it feed a misleading estimate.
+    if (pointsRef.current.length > 0) {
+      queueMicrotask(() => {
+        commitPointsRef.current([]);
+        setIsDrawing(true);
+        setClearedByRecentre(true);
+      });
+    }
   }, [centerLng, centerLat]);
 
   const handleUndo = () => {
@@ -287,6 +298,15 @@ export function MapCanvas({ onAreaChange, center = DEFAULT_CENTER }: MapCanvasPr
         <p className="text-xs text-slate-500">
           Imagery looking blank or gray? Zoom out with the − button — high-res
           satellite detail isn&apos;t available everywhere yet.
+        </p>
+      )}
+      {clearedByRecentre && points.length === 0 && (
+        <p
+          role="status"
+          className="rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-900"
+        >
+          Map moved to your new address, so the previous trace was cleared.
+          Trace the area again here.
         </p>
       )}
       <p className="text-sm text-slate-600">
