@@ -27,6 +27,21 @@ const audiences = [
   ["Property managers", "Repeatable estimates for maintenance budgets and common areas."],
 ];
 
+const differentiators = [
+  [
+    "Local material intelligence",
+    "Not generic square-foot math. Product recommendations, densities, depths, and sellable quantities are built around the way Ground Control actually sells material.",
+  ],
+  [
+    "Fulfillment-aware from the start",
+    "Delivery zones, minimums, truck limits, weight, and blower placement become part of the estimate before an order reaches the yard.",
+  ],
+  [
+    "Implemented with your team",
+    "We map the catalog, pricing rules, delivery geography, and staff habits into the workflow, then keep a human in the loop when a job needs judgment.",
+  ],
+];
+
 export default function AboutPage() {
   return (
     <div className="min-h-screen overflow-hidden bg-[#f7f5ef] text-slate-900">
@@ -110,6 +125,28 @@ export default function AboutPage() {
             </div>
           </div>
           <div className="pointer-events-none absolute -bottom-20 -left-16 hidden h-48 w-48 rounded-full border-[26px] border-green-700/15 lg:block" />
+        </section>
+
+        <section className="border-y border-slate-900/10 bg-slate-950 text-white">
+          <div className="mx-auto max-w-6xl px-5 py-16 sm:px-8 sm:py-20">
+            <div className="max-w-2xl">
+              <p className="text-xs font-bold uppercase tracking-[0.24em] text-amber-400">
+                Why this is different
+              </p>
+              <h2 className="mt-3 text-3xl font-black tracking-[-0.03em] sm:text-4xl">
+                The math is simple. The local knowledge is the product.
+              </h2>
+            </div>
+            <div className="mt-10 grid gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 md:grid-cols-3">
+              {differentiators.map(([title, text], index) => (
+                <article key={title} className="bg-slate-950 p-6 sm:p-7">
+                  <p className="text-xs font-bold text-green-300">0{index + 1}</p>
+                  <h3 className="mt-8 text-lg font-bold text-white">{title}</h3>
+                  <p className="mt-3 text-sm leading-6 text-slate-300">{text}</p>
+                </article>
+              ))}
+            </div>
+          </div>
         </section>
 
         <section className="mx-auto max-w-6xl px-5 py-16 sm:px-8 sm:py-24">
