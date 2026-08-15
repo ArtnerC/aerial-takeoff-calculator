@@ -231,6 +231,28 @@ export function MapCanvas({ onAreaChange, center = DEFAULT_CENTER }: MapCanvasPr
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // The map instance is created once, so a later address selection has to be
+  // pushed into it explicitly or the view stays on the initial centre.
+  const [centerLng, centerLat] = center;
+  const hasCenteredRef = useRef(false);
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    if (!hasCenteredRef.current) {
+      hasCenteredRef.current = true;
+      return;
+    }
+    const target = { center: [centerLng, centerLat] as [number, number], zoom: DEFAULT_ZOOM };
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+    if (prefersReducedMotion) {
+      map.jumpTo(target);
+    } else {
+      map.flyTo({ ...target, duration: 1200 });
+    }
+  }, [centerLng, centerLat]);
+
   const handleUndo = () => {
     commitPoints(pointsRef.current.slice(0, -1));
   };
